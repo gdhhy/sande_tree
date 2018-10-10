@@ -60,48 +60,28 @@
                     bAutoWidth: false,
                     "columns": [
                         {"data": "所在层级", "sClass": "center"},
-                        {"data": "用户ID", "sClass": "center"},
-                        {"data": "用户名", "sClass": "center"},
                         {"data": "姓名", "sClass": "center", defaultContent: ""},
-                        {"data": "推荐人", "sClass": "center", defaultContent: ""},
-                        {"data": "电话", "sClass": "center"},
                         {"data": "用户ID", "sClass": "center"},
-                        {"data": "用户ID", "sClass": "center"}
+                        {"data": "身份证号", "sClass": "center"},
+                        {"data": "电话", "sClass": "center"},
+                        {"data": "推荐人", "sClass": "center", defaultContent: ""},
+                        {"data": "推荐人ID", "sClass": "center"}
                     ],
 
                     'columnDefs': [
                         {"orderable": false, className: 'text-center', "targets": 0, title: '层级'},
+                        {"orderable": true, className: 'text-center', "targets": 1, title: '姓名'},
                         {
-                            "orderable": true, className: 'text-center', "targets": 1, title: '用户ID',
+                            "orderable": true, className: 'text-center', "targets": 2, title: '用户ID',
                             render: function (data, type, row, meta) {
                                 return '<a  href="#" class="showMemberInfo" >{0}</a>'.format(data);
                             }
                         },
-                        {"orderable": true, className: 'text-center', "targets": 2, title: '用户名'},
-                        {"orderable": true, className: 'text-center', "targets": 3, title: '姓名'},
-                        {"orderable": true, className: 'text-center', "targets": 4, title: '推荐人'},
-                        {"orderable": true, className: 'text-center', "targets": 5, title: '电话'},
-                        {
-                            "orderable": false, 'searchable': false, 'targets': 6, title: '积分账户流水',
-                            render: function (data, type, row, meta) {
-                                return '<div class="hidden-sm hidden-xs action-buttons">' +
-                                    '<a class="green" href="#" data-memberNo="{0}" >'.format(data) +
-                                    '<i class="ace-icon fa fa-film bigger-130"></i>' +
-                                    '</a>' +
-                                    '</div>';
-                            }
-                        }, {
-                            "orderable": false, 'searchable': false, 'targets': 7,title:'提现流水',
-                            render: function (data, type, row, meta) {
-                                return '<div class="hidden-sm hidden-xs action-buttons">' +
-                                    '<a class="green" href="#" data-memberNo="{0}">'.format(data) +
-                                    '<i class="ace-icon glyphicon glyphicon-yen  bigger-130"></i>' +
-                                    '</a>' +
-                                    '</div>';
-                            }
-                        }
+                        {"orderable": true, className: 'text-center', "targets": 3, title: '证件号'},
+                        {"orderable": true, className: 'text-center', "targets": 4, title: '电话'},
+                        {"orderable": true, className: 'text-center', "targets": 5, title: '推荐人'},
+                        {"orderable": true, className: 'text-center', "targets": 6, title: '推荐人ID'}
                     ],
-                    // "aLengthMenu": [[20, 100, -1], ["20", "100", "全部"]],//二组数组，第一组数量，第二组说明文字;
                     "aaSorting": [],//"aaSorting": [[ 4, "desc" ]],//设置第5个元素为默认排序
                     language: {
                         url: '/js/datatables/datatables.chinese.json'
@@ -118,17 +98,8 @@
 
             myTable.on('draw', function () {
                 $('#dynamic-table tr').find('.showMemberInfo').click(function () {
-                    var url = "/memberInfo2.jspx?memberNo={0}".format($(this).text());
+                    var url = "/memberInfo.jspx?memberNo={0}".format($(this).text());
                     window.open(encodeURI(encodeURI(url)), "_blank");
-                });
-
-                $('#dynamic-table tr').find('a:eq(1)').click(function () {
-                    var url = "/memberIntegral.jsp?memberNo={0}".format($(this).attr("data-memberNo"));
-                    window.open(url, "_blank");
-                });
-                $('#dynamic-table tr').find('a:eq(2)').click(function () {
-                    var url = "/memberWithdraw.jsp?memberNo={0}".format($(this).attr("data-memberNo"));
-                    window.open(url, "_blank");
                 });
             });
 

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,11 +34,8 @@ public class MemberController {
                              @RequestParam(value = "phone", required = false) String phone,
                              @RequestParam(value = "idCard", required = false) String idCard,
                              @RequestParam(value = "parentNo", required = false) String parentNo,
-                             @RequestParam(value = "parentNo2", required = false) String parentNo2,
                              @RequestParam(value = "realName", required = false) String realName,
-                             @RequestParam(value = "bankCard", required = false) String bankCard,
                              @RequestParam(value = "threeThirty", required = false) Boolean threeThirty,
-                             @RequestParam(value = "search[value]", required = false) String searchValue,
                              @RequestParam(value = "draw", required = false) Integer draw,
                              @RequestParam(value = "start", required = false) Integer start,
                              @RequestParam(value = "length", required = false, defaultValue = "100") Integer length
@@ -52,10 +48,8 @@ public class MemberController {
         param.put("phone", phone);
         param.put("idCard", idCard);
         param.put("realName", realName);
-        param.put("bankCard", bankCard);
         param.put("threeThirty", threeThirty);
         param.put("parentNo", parentNo);
-        param.put("parentNo2", parentNo2);
         param.put("start", start);
         if (parentNo == null)
             param.put("length", length);
@@ -82,7 +76,7 @@ public class MemberController {
         //List<Map<String, Object>> oj = new List<HashMap<>>();
         for (Member member : members) {
             Map<String, Object> item = new HashMap<>();
-            String baseText = "层级:" + member.getLevel() + "，" + ("".equals(member.getRealName()) ? member.getMemberNo() : member.getRealName()) + "，手机：" + member.getPhone();
+            String baseText = "层级:" + member.getCurLevel() + "，" + ("".equals(member.getRealName()) ? member.getMemberNo() : member.getRealName()) + "，手机：" + member.getPhone();
             if (member.getDirectCount() > 0) {
                 baseText += "，下级深度：" + member.getChildDepth() + "，下级总数：" + member.getChildTotal();
                 item.put("type", "folder");
@@ -108,54 +102,6 @@ public class MemberController {
         return gson.toJson(result);
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/memberZTree", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
-    public String memberZTree(@RequestParam(value = "id", required = false) String memberNo) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("parentNo", memberNo);
-        List<Member> members = memberMapper.selectMember(param);
-
-        //Map<String, Object> result = new HashMap<>();
-        //Map<String, Object> obj = new HashMap<>();
-        List<Map<String, Object>> list = new ArrayList<>();
-        for (Member member : members) {
-            Map<String, Object> item = new HashMap<>();
-            String value = member.getMemberNo() + "，姓名：" + (member.getRealName() != null ? member.getRealName() : "") + "，手机：" + member.getPhone();
-            if (member.getDirectCount() > 0)// item.put("name", member.getRealName() + "，下级深度：" + member.getChildDepth() + "，下级总数：" + member.getChildTotal());
-                value += "，下级深度：" + member.getChildDepth() + "，下级总数：" + member.getChildTotal();
-
-            item.put("name", value);
-            item.put("isParent", member.getDirectCount() > 0);
-            item.put("id", member.getMemberNo());
-
-            list.add(item);
-        }
-
-        return gson.toJson(list);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/getPurseType", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public String getPurseType(@RequestParam(value = "memberNo") String memberNo) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("memberNo", memberNo);
-        List<Map<String, Object>> purseTypes = memberMapper.selectPurseType(param);
-
-        return gson.toJson(purseTypes);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/getReasonCode", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public String getReasonCode(@RequestParam(value = "memberNo") String memberNo,
-                                @RequestParam(value = "purseType", required = false) Integer purseTypeID) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("memberNo", memberNo);
-        param.put("purseType", purseTypeID);
-        List<Map<String, Object>> purseTypes = memberMapper.selectReasonCode(param);
-
-        return gson.toJson(purseTypes);
-    }
-
     @RequestMapping(value = "/member", method = RequestMethod.GET)
     public String member(@RequestParam(value = "searchKey", required = false) String searchKey, ModelMap model) {
         log.debug("url = member");
@@ -163,75 +109,8 @@ public class MemberController {
         return "/member";
     }
 
+
     @RequestMapping(value = "/memberInfo", method = RequestMethod.GET)
-    public String memberInfo(@RequestParam(value = "memberNo", required = false) String memberNo, ModelMap model) {
-        log.debug("url = memberInfo");
-        Map<String, Object> param = new HashMap<>();
-        param.put("memberNo", memberNo);
-
-        List<Member> members = memberMapper.selectMember(param);
-        if (members.size() >= 1)
-            model.addAttribute("member", members.get(0));
-
-
-        return "/memberInfo";
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/memberIntegral", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public String memberIntegral(@RequestParam(value = "memberNo", required = false) Integer memberNo,
-                                 @RequestParam(value = "purseType", required = false) Integer purseType,
-                                 @RequestParam(value = "purseName", required = false) String purseName,
-                                 @RequestParam(value = "reasonCode", required = false) Integer reasonCode,
-                                 @RequestParam(value = "draw", required = false) Integer draw,
-                                 @RequestParam(value = "start", required = false) Integer start,
-                                 @RequestParam(value = "length", required = false, defaultValue = "100") Integer length) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("memberNo", memberNo);
-        param.put("purseType", purseType);
-        param.put("purseName", purseName);
-        param.put("reasonCode", reasonCode);
-        param.put("start", start);
-        param.put("length", length);
-
-        //model.addAttribute("integral", memberMapper.selectMemberIntegral(param));
-        int recordCount = memberMapper.selectMemberIntegralCount(param);
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", memberMapper.selectMemberIntegral(param));
-        result.put("draw", draw);/*draw——number类型——请求次数计数器，每次发送给服务器后原封返回，因为请求是异步的，为了确保每次请求都能对应到服务器返回到的数据。*/
-        result.put("recordsTotal", recordCount);
-        result.put("recordsFiltered", recordCount);
-        return gson.toJson(result);
-        //return "/memberIntegral";
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/memberWithdraw", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public String memberWithdraw(@RequestParam(value = "memberNo", required = false) String memberNo,
-                                 @RequestParam(value = "bankcard", required = false) String bankcard,
-                                 @RequestParam(value = "draw", required = false) Integer draw,
-                                 @RequestParam(value = "start", required = false) Integer start,
-                                 @RequestParam(value = "length", required = false, defaultValue = "100") Integer length) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("memberNo", memberNo);
-        param.put("bankcard", bankcard);
-        param.put("start", start);
-        param.put("length", length);
-
-        //int recordCount = memberMapper.selectWithdrawCount(param);
-        List<Map<String, Object>> withdraws = memberMapper.selectWithdraw(param);
-       /* Double total = 0.0;
-        for (Map map : withdraws) total += map.get("status") == "成功" ? (Double) map.get("amount") : 0.0;*/
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", withdraws);
-        //result.put("total", total);
-        result.put("draw", draw);/*draw——number类型——请求次数计数器，每次发送给服务器后原封返回，因为请求是异步的，为了确保每次请求都能对应到服务器返回到的数据。*/
-        /*result.put("recordsTotal", recordCount);
-        result.put("recordsFiltered", recordCount);*/
-        return gson.toJson(result);
-    }
-
-    @RequestMapping(value = "/memberInfo2", method = RequestMethod.GET)
     public String memberInfo2(@RequestParam(value = "memberNo", required = false) String memberNo, ModelMap model) {
         log.debug("url = memberInfo");
         Map<String, Object> param = new HashMap<>();
@@ -241,7 +120,7 @@ public class MemberController {
             model.addAttribute("member", members.get(0));
 
 
-        return "/memberInfo2";
+        return "/memberInfo";
     }
 
     @ResponseBody

@@ -16,17 +16,5 @@ public interface MemberMapper {
 
     List<Member> selectMember(@Param("param") Map<String, Object> param);
 
-    int selectMemberIntegralCount(@Param("param") Map<String, Object> param);
-
-    //int selectWithdrawCount(@Param("param") Map<String, Object> param);
-
-    List<Map<String, Object>> selectPurseType(@Param("param") Map<String, Object> param);
-
-    List<Map<String, Object>> selectReasonCode(@Param("param") Map<String, Object> param);
-
-    List<Map<String, Object>> selectMemberIntegral(@Param("param") Map<String, Object> param);
-
-    List<Map<String, Object>> selectWithdraw(@Param("param") Map<String, Object> param);
-
     List<Map<String, Object>> selectParent(@Param("param") Map<String, Object> param);
 }

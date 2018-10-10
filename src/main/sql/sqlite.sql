@@ -14,7 +14,7 @@ CREATE TABLE member (
   phone        varchar(100), -- 电话
   member_info  varchar(1023) DEFAULT NULL,
   parent_no    varchar(20)   DEFAULT NULL,
-  level        int           DEFAULT 0, -- 当前层级
+  cur_level        int           DEFAULT 0, -- 当前层级
   child_total  int           DEFAULT 0, -- 所有下级数
   child_depth  int           DEFAULT 0, -- 下级深度
   direct_count int           DEFAULT 0, -- 直接下级数

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
-    <title>云之道传销查询系统</title>
+    <title>三得传销查询系统</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 
     <!-- bootstrap & fontawesome -->
@@ -56,15 +56,13 @@
                         {"data": "memberId", "sClass": "center"},
                         {"data": "memberNo", "sClass": "center"},
                         {"data": "realName", "sClass": "center"},
+                        {"data": "idCard", "sClass": "center"},
                         {"data": "phone", "sClass": "center"},
                         {"data": "parentNo", "sClass": "center"},
-                        {"data": "level", "sClass": "center"},
+                        {"data": "curLevel", "sClass": "center"},
                         {"data": "childTotal", "sClass": "center"},
                         {"data": "childDepth", "sClass": "center"},
                         {"data": "directCount", "sClass": "center"},
-                        {"data": "secondCount", "sClass": "center"},
-                        {"data": "memberNo", "sClass": "center"},
-                        {"data": "memberNo", "sClass": "center"},
                         {"data": "memberNo", "sClass": "center"}
                     ],
 
@@ -77,28 +75,22 @@
                         },
                         {"orderable": false, className: 'text-center', "targets": 2},
                         {"orderable": false, className: 'text-center', "targets": 3},
+                        {"orderable": false, className: 'text-center', "targets": 4},
                         {
-                            "orderable": false, "searchable": false, className: 'text-center', "targets": 4,
+                            "orderable": false, "searchable": false, className: 'text-center', "targets": 5,
                             render: function (data, type, row, meta) {
-                                return '<a href="#" class="research" name="parentNo" data-parentNo="{0}">{1}</a>'.format(data,data);
+                                return '<a href="#" class="research" name="parentNo" data-parentNo="{0}">{1}</a>'.format(data, data);
                             }
                         },
-                        {"orderable": false, 'targets': 5, 'searchable': false},
-                        {"orderable": false, "searchable": false, className: 'text-center', "targets": 6},
+                        {"orderable": false, 'targets': 6, 'searchable': false},
                         {"orderable": false, "searchable": false, className: 'text-center', "targets": 7},
-                        {
-                            "orderable": false, 'searchable': false, 'targets': 8,
-                            render: function (data, type, row, meta) {
-                                return '<a href="#" class="research" name="parentNo" data-parentNo="{0}">{1}</a>'.format(row["memberNo"], data);
-                            }
-                        },
+                        {"orderable": false, "searchable": false, className: 'text-center', "targets": 8},
                         {
                             "orderable": false, 'searchable': false, 'targets': 9,
                             render: function (data, type, row, meta) {
-                                return '<a href="#" class="research" name="parentNo2" data-parentNo="{0}">{1}</a>'.format(row["memberNo"], data);
+                                return '<a href="#" class="research" name="parentNo" data-parentNo="{0}">{1}</a>'.format(row["memberNo"], data);
                             }
-                        },
-                        {
+                        }, {
                             "orderable": false, 'searchable': false, 'targets': 10,
                             render: function (data, type, row, meta) {
                                 return '<div class="hidden-sm hidden-xs action-buttons">' +
@@ -107,28 +99,7 @@
                                     '</a>' +
                                     '</div>';
                             }
-                        },
-                        {
-                            "orderable": false, 'searchable': false, 'targets': 11,
-                            render: function (data, type, row, meta) {
-                                return '<div class="hidden-sm hidden-xs action-buttons">' +
-                                    '<a class="green" href="#" data-memberNo="{0}">'.format(data) +
-                                    '<i class="ace-icon  fa fa-film  bigger-130"></i>' +
-                                    '</a>' +
-                                    '</div>';
-                            }
-                        },
-                        {
-                            "orderable": false, 'searchable': false, 'targets': 12,
-                            render: function (data, type, row, meta) {
-                                return '<div class="hidden-sm hidden-xs action-buttons">' +
-                                    '<a class="green" href="#" data-memberNo="{0}">'.format(data) +
-                                    '<i class="ace-icon glyphicon glyphicon-yen  bigger-130"></i>' +
-                                    '</a>' +
-                                    '</div>';
-                            }
                         }
-
                     ],
                     "aLengthMenu": [[20, 100, 1000], ["20", "100", "1000"]],//二组数组，第一组数量，第二组说明文字;
                     "aaSorting": [],//"aaSorting": [[ 4, "desc" ]],//设置第5个元素为默认排序
@@ -156,32 +127,22 @@
                 });
             });
             myTable.on('draw', function () {
+                let url;
                 $('#dynamic-table tr').find('a:eq(0)').click(function () {
-                    var url = "/memberInfo2.jspx?memberNo={0}".format($(this).text());
+                    url = "/memberInfo.jspx?memberNo={0}".format($(this).text());
                     window.open(url, "_blank");
                 });
 
-                $('#dynamic-table tr').find('a:eq(4)').click(function () {
-                    var url = "/memberParent.jsp?memberNo={0}&realName={1}".format($(this).attr("data-memberNo"), $(this).attr("data-realName"));
+                $('#dynamic-table tr').find('a:eq(3)').click(function () {
+                    url = "/memberParent.jsp?memberNo={0}&realName={1}".format($(this).attr("data-memberNo"), $(this).attr("data-realName"));
                     window.open(encodeURI(encodeURI(url)), "_blank");
                 });
-                $('#dynamic-table tr').find('a:eq(5)').click(function () {
-                    var url = "/memberIntegral.jsp?memberNo={0}".format($(this).attr("data-memberNo"));
-                    window.open(url, "_blank");
-                });
-                $('#dynamic-table tr').find('a:eq(6)').click(function () {
-                    var url = "/memberWithdraw.jsp?memberNo={0}".format($(this).attr("data-memberNo"));
-                    window.open(url, "_blank");
-                });
                 $('#dynamic-table tr').find('.research').click(function () {
-                    var url = "/listMember.jspx?{0}={1}".format($(this).attr("name"), $(this).attr("data-parentNo"));
+                    url = "/listMember.jspx?{0}={1}".format($(this).attr("name"), $(this).attr("data-parentNo"));
                     $('.form-search')[0].reset();
-                    $('input[name="parentNo"]').val( $(this).attr("data-parentNo"));
+                    $('input[name="parentNo"]').val($(this).attr("data-parentNo"));
                     myTable.ajax.url(encodeURI(url)).load();
-                    if($(this).attr("name")==='parentNo')
-                        $('#resultName').text( $(this).attr("data-parentNo")+"的直接下级");
-                    else
-                        $('#resultName').text( $(this).attr("data-parentNo")+"的二层下级");
+                        $('#resultName').text($(this).attr("data-parentNo") + "的直接下级");
 
                 });
             });
@@ -191,7 +152,13 @@
             $('.form-search :text:lt(2)').each(function () {
                 $(this).width(80);
             });
-            $('.form-search :text:gt(2)').each(function () {
+            $('.form-search :text:eq(2)').each(function () {
+                $(this).width(160);
+            });
+            $('.form-search :text:eq(3)').each(function () {
+                $(this).width(90);
+            });
+            $('.form-search :text:gt(3)').each(function () {
                 $(this).width(60);
             });
             $('.form-search :text').keydown(function (event) {
@@ -261,22 +228,21 @@
             <div class="breadcrumbs" id="breadcrumbs">
                 <ul class="breadcrumb">
                     <form class="form-search form-inline">
-                        <%--<label>用户ID ：</label>
+                        <label>用户ID ：</label>
                         <input type="text" name="memberNo" placeholder="用户ID……" class="nav-search-input"
-                               autocomplete="off"/>--%>
+                               autocomplete="off"/>
                         姓名：
                         <input type="text" name="realName" placeholder="姓名……" class="nav-search-input"
                                autocomplete="off"/>
+                        证件号：
+                        <input type="text" name="idCard" placeholder="证件号……" class="nav-search-input" autocomplete="off"/>
                         手机号：
                         <input type="text" name="phone" placeholder="手机号……" class="nav-search-input"
-                               autocomplete="off"/>
-                        银行卡号：
-                        <input type="text" name="bankCard" placeholder="银行卡号……" class="nav-search-input"
                                autocomplete="off"/>
                         上级ID ：
                         <input type="text" name="parentNo" placeholder="上级用户ID……" class="nav-search-input"
                                autocomplete="off"/>&nbsp;&nbsp;&nbsp;
-                        三层30人(直接和二层）：
+                        三层30人：
                         <input type="checkbox" id="three_thirty">&nbsp;&nbsp;&nbsp;
                         <button class="btn btn-sm btn-reset" type="reset">
                             <i class="ace-icon fa fa-undo bigger-110"></i>
@@ -304,7 +270,7 @@
 
                             <div class="col-xs-12">
                                 <div class="table-header">
-                                   <span id="resultName"></span> 成员列表
+                                    <span id="resultName"></span> 成员列表
                                     <div class="pull-right tableTools-container"></div>
                                 </div>
                                 <!-- div.table-responsive -->
@@ -317,16 +283,14 @@
                                             <th></th>
                                             <th>用户ID</th>
                                             <th>姓名</th>
-                                            <th>电话</th>
+                                            <th>证件号</th>
+                                            <th>手机号</th>
                                             <th>上级ID</th>
                                             <th>当前层级</th>
                                             <th>下级总数</th>
                                             <th>最深级数</th>
                                             <th>直接下级数</th>
-                                            <th>二层下级数</th>
-                                            <th>查看上线</th>
-                                            <th>钱包流水</th>
-                                            <th>提现流水</th>
+                                            <th>查看上级</th>
                                         </tr>
                                         </thead>
                                     </table>
